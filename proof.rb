@@ -84,19 +84,26 @@ class Proof
     # iterate until goal found
     until @steps.any? { |step| step.formula == @goal }
       modus_ponens_results = add_modus_ponens
-      unless modus_ponens_results.empty?
-        @steps.concat(modus_ponens_results)
-      else
+      if modus_ponens_results.empty?
         request_help
+      else
+        @steps.concat(modus_ponens_results)
       end
     end
     print_proof
   end
 
   def print_proof
+    header =<<-EOS
+ Step | Formula / Reason
+------+------------------
+    EOS
+    puts header
     @steps.each_with_index do |step, index|
-      print "#{index}: "
+      # print "| #{index} | "
+      printf "  %-2s  | ", index
       step.print_step
+      puts
     end
   end
 end
@@ -110,7 +117,7 @@ class ProofStep
 
   def print_step
     @formula.print_formula
-    print " "
+    print " / "
     print_reason
   end
 end
@@ -121,7 +128,7 @@ class Hypothesis < ProofStep
   end
 
   def print_reason
-    puts "Hypothesis"
+    print "Hypothesis"
   end
 
   def print_formula
@@ -139,7 +146,6 @@ class Axiom1 < ProofStep
     a_val.print_formula
     print ", B substituted as "
     b_val.print_formula
-    puts
   end
 end
 
@@ -155,7 +161,6 @@ class Axiom2 < ProofStep
     b_val.print_formula
     print ", C substituted as "
     c_val.print_formula
-    puts
   end
 end
 
@@ -167,7 +172,6 @@ class Axiom3 < ProofStep
   def print_reason
     print "Axiom 3 with A substituted as "
     a_val.print_formula
-    puts
   end
 end
 
@@ -183,6 +187,5 @@ class ModusPonens < ProofStep
     @step1.print_formula
     print " and "
     @step2.print_formula
-    puts
   end
 end

@@ -1,4 +1,4 @@
-# to run: ruby prover.rb
+# to run: ruby main.rb
 
 require 'rly'
 
