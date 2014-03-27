@@ -10,7 +10,7 @@ require './proof.rb'
 class FormulaLex < Rly::Lex
   ignore " \t\n" # ignore whitespace
 
-  token :VARIABLE, /[A-Z]/
+  token :VARIABLE, /([A-EG-Z]|False)/
   token :IMPLIES, /\->/
   token :LPAREN, /\(/
   token :RPAREN, /\)/
