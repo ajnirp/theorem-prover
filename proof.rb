@@ -58,6 +58,9 @@ class Proof
   #   return false
   # end
 
+  # for every pair of Proofsteps in @steps
+  # try to generate a new formula using modus ponens
+  # if it succeeds, add it to @steps
   def add_modus_ponens
     new_steps = Set.new
     for i in 0...(@steps.length)
@@ -69,8 +72,10 @@ class Proof
     return new_steps.to_a
   end
 
+  # ask the user for which axiom to use
+  # and what formulae to pass to that axiom
   def request_help
-    print "Use axiom: (1, 2 or 3) "
+    print "Need help! Use which axiom? (1, 2 or 3) "
     axiom = gets.to_i
     new_step = case axiom
     when 1
@@ -101,6 +106,7 @@ class Proof
     end
   end
 
+  # the main function
   def prove
     # iterate until goal found
     # until @steps.any? { |step| step.formula == @goal }
