@@ -29,39 +29,42 @@ end
 class Axiom1 < ProofStep
   def initialize(a_val, b_val)
     @formula = Formula.axiom1(a_val, b_val)
+    @a, @b = a_val, b_val
   end
 
   def print_reason
     print "Axiom 1 with A substituted as "
-    a_val.print_formula
+    @a.print_formula
     print ", B substituted as "
-    b_val.print_formula
+    @b.print_formula
   end
 end
 
 class Axiom2 < ProofStep
   def initialize(a_val, b_val, c_val)
     @formula = Formula.axiom2(a_val, b_val, c_val)
+    @a, @b, @c = a_val, b_val, c_val
   end
 
   def print_reason
     print "Axiom 2 with A substituted as "
-    a_val.print_formula
+    @a.print_formula
     print ", B substituted as "
-    b_val.print_formula
+    @b.print_formula
     print ", C substituted as "
-    c_val.print_formula
+    @c.print_formula
   end
 end
 
 class Axiom3 < ProofStep
   def initialize(a_val)
     @formula = Formula.axiom3(a_val)
+    @a = a_val
   end
 
   def print_reason
     print "Axiom 3 with A substituted as "
-    a_val.print_formula
+    @formula.print_formula
   end
 end
 
