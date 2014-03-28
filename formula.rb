@@ -64,7 +64,7 @@ class Formula
       Formula.new(Formula.new(x,$FALSE_VAL),y)
     end
 
-    def logical_and(x)
+    def logical_and(x,y)
       Formula.new(Formula.new(x,Formula.new(y, $FALSE_VAL)),$FALSE_VAL)
     end
   end
