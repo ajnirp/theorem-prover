@@ -2,6 +2,7 @@
 
 require './parse.rb'
 
+# input the user hypotheses
 def get_hypotheses
   hypotheses = []
   print "Number of hypotheses? " if $SHOW_OUTPUT
@@ -12,6 +13,7 @@ def get_hypotheses
   return hypotheses
 end
 
+# input the goal
 def get_goal
   print "Goal? " if $SHOW_OUTPUT
   return parse(gets.chomp)

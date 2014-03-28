@@ -1,5 +1,6 @@
 require 'set'
 require './step.rb'
+require './monkeypatches.rb'
 
 class Proof
   attr_accessor :hypotheses
@@ -38,26 +39,6 @@ class Proof
     return result.map { |item| item.is_a?(String) ? Variable.new(item) : item }
   end
 
-  # def try_modus_ponens(step)
-  #   # 'step' is a possible source for modus ponens
-
-  #   # print "You are trying to apply modus ponens using: "
-  #   # step.formula.print_formula
-  #   # puts
-
-  #   if step.formula.is_a?(Formula)
-  #     if step.formula.rhs == @goal
-  #       parents = @steps.select { |st| st.formula == step.formula.lhs }
-  #       unless parents.empty? 
-  #         @steps << ModusPonens.new(step.formula, parents.first.formula)
-  #         puts "found"
-  #         return true # found the two "parent" steps in modus ponens for goal
-  #       end
-  #     end
-  #   end
-  #   return false
-  # end
-
   # for every pair of Proofsteps in @steps
   # try to generate a new formula using modus ponens
   # if it succeeds, add it to @steps
@@ -90,33 +71,50 @@ class Proof
     when 3
       print "A? "; a = parse(gets.chomp)
       Axiom3.new(a)
-    else
-      axiom
     end
     if [1,2,3].include?(axiom)
       print "Adding "
       new_step.print_formula
       print " to the list of steps\n"
       @steps << new_step unless @steps.include?(new_step)
-    elsif new_step.zero?
-      puts "No help used"
-      return
     else
       STDERR.puts "Please enter either 1, 2 or 3"
     end
   end
 
+  def add_axioms
+    possible_parents = @steps.select { |step| step.formula.formula? && step.formula.rhs == @goal }
+    needed = possible_parents.map { |x| x.formula.lhs }
+    
+    found_new = false
+    needed.each do |n|
+      if n.formula?
+        @steps << Axiom1.new(n.rhs, n.lhs) if @steps.any? { |step| step.formula == n.rhs }
+        found_new = true
+        if n.lhs.formula? && n.rhs.formula? && n.lhs.lhs == n.rhs.lhs
+          if @steps.any? { |step| step.formula == n.lhs.lhs }
+            @steps << Axiom2.new(n.lhs.lhs, n.lhs.rhs, n.rhs.rhs)
+          end
+        end
+      end
+      # @steps << Axiom3.new(n)
+    end
+    return found_new
+  end
+
   # the main function
   def prove
     # iterate until goal found
-    # until @steps.any? { |step| step.formula == @goal }
-    until @steps.map(&:formula).include?(@goal)
+    until @steps.any? { |step| step.formula == @goal }
       modus_ponens_results = add_modus_ponens
       if modus_ponens_results.empty?
-        request_help
+        found_new = add_axioms
+        if not found_new
+          request_help
+        end
       else
         @steps.concat(modus_ponens_results)
-      end
+      end      
     end
     print_proof
   end
