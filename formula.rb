@@ -43,9 +43,9 @@ class Formula
     end
 
     def modus_ponens(formula1, formula2)
-      if formula1.is_a?(Formula) and formula1.lhs == formula2
+      if formula1.formula? and formula1.lhs == formula2
         formula1.rhs
-      elsif formula2.is_a?(Formula) and formula2.lhs == formula1
+      elsif formula2.formula? and formula2.lhs == formula1
         formula2.rhs
       else
         # puts "You are trying to apply modus ponens to "
@@ -53,6 +53,17 @@ class Formula
         # formula2.print_formula
         raise "error: cannot apply modus ponens here"
       end
+    end
+  end
+
+  # turn formula of the type ((A -> False) -> False)
+  # into simply A
+  # A is a Formula (need not be only a Variable)
+  def reduce_negations
+    if @rhs == $FALSE_VAL && @lhs.formula? && @lhs.rhs == $FALSE_VAL
+      @lhs.lhs.reduce_negations
+    else
+      Formula.new(@lhs.reduce_negations, @rhs.reduce_negations)
     end
   end
 end
@@ -101,6 +112,10 @@ class Variable < Formula
       ),
       $FALSE_VAL
     )
+  end
+
+  def reduce_negations
+    self
   end
 end
 

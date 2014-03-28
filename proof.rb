@@ -11,12 +11,12 @@ class Proof
   def initialize(hypotheses, goal)
     @steps = []
 
-    goal_derivation = Derivation.new(goal)
+    goal_derivation = Derivation.new(goal.reduce_negations)
     goal_derivation.shift_left_complete!
 
     # two kinds of hypotheses: initial hypotheses
     # and hypotheses that came from shifting the goal left
-    unique_hypotheses = get_unique_formulae(hypotheses, goal_derivation.lhs_list)
+    unique_hypotheses = get_unique_formulae(hypotheses.map(&:reduce_negations), goal_derivation.lhs_list)
     add_hypotheses(unique_hypotheses)
 
     # @steps.each {|x| p x}
@@ -97,13 +97,21 @@ class Proof
           end
         end
       end
-      # @steps << Axiom3.new(n)
+      @steps << Axiom3.new(n)
     end
     return found_new
   end
 
   # the main function
   def prove
+    puts "\nHypotheses\n----------"
+    @steps.each { |x| x.formula.print_formula ; puts }
+
+    # exit
+
+    print "\nGoal: "
+    @goal.print_formula ; puts
+
     # iterate until goal found
     until @steps.any? { |step| step.formula == @goal }
       modus_ponens_results = add_modus_ponens
