@@ -28,6 +28,7 @@ class Formula
   end
 
   class << self
+
     def axiom1(a_val, b_val)
       return Formula.new(a_val, Formula.new(b_val, a_val))
     end
@@ -53,6 +54,18 @@ class Formula
         # formula2.print_formula
         raise "error: cannot apply modus ponens here"
       end
+    end
+
+    def logical_not(x)
+      Formula.new(x,$FALSE_VAL)
+    end
+
+    def logical_or(x,y)
+      Formula.new(Formula.new(x,$FALSE_VAL),y)
+    end
+
+    def logical_and(x)
+      Formula.new(Formula.new(x,Formula.new(y, $FALSE_VAL)),$FALSE_VAL)
     end
   end
 
@@ -91,27 +104,6 @@ class Variable < Formula
 
   def ==(x)
     x.class == Variable ? x.name == @name : false
-  end
-
-  def logical_not
-    Formula.new(self,$FALSE_VAL)
-  end
-
-  def logical_or(x)
-    Formula.new(
-      Formula.new(self,$FALSE_VAL),
-      x
-    )
-  end
-
-  def logical_and(x)
-    Formula.new(
-      Formula.new(
-        self,
-        Formula.new(x, $FALSE_VAL)
-      ),
-      $FALSE_VAL
-    )
   end
 
   def reduce_negations

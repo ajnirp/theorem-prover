@@ -9,6 +9,9 @@ class FormulaLex < Rly::Lex
 
   token :VARIABLE, /([A-EG-Z]|False)/
   token :IMPLIES, /\->/
+  token :AND, /and/
+  token :OR, /or/
+  token :NOT, /not/
   token :LPAREN, /\(/
   token :RPAREN, /\)/
 
@@ -32,6 +35,21 @@ class FormulaParse < Rly::Yacc
   # (formula) implication
   rule 'expression : expression IMPLIES expression' do |ex, ex1, imp, ex2|
     ex.value = Formula.new(ex1.value, ex2.value)
+  end
+
+  # logical and
+  rule 'expression : expression AND expression' do |ex, ex1, and_token, ex2|
+    ex.value = Formula.logical_and(ex1.value, ex2.value)
+  end
+
+  # logical or
+  rule 'expression : expression OR expression' do |ex, ex1, or_token, ex2|
+    ex.value = Formula.logical_or(ex1.value, ex2.value)
+  end
+
+  # logical not
+  rule 'expression : NOT expression' do |ex, not_token, ex1|
+    ex.value = Formula.logical_not(ex1.value)
   end
 
   # parentheses
