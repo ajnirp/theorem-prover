@@ -66,7 +66,7 @@ class Proof
     when 2
       print "A? "; a = parse(gets.chomp)
       print "B? "; b = parse(gets.chomp)
-      print "C? "; b = parse(gets.chomp)
+      print "C? "; c = parse(gets.chomp)
        Axiom2.new(a,b,c)
     when 3
       print "A? "; a = parse(gets.chomp)
@@ -102,6 +102,11 @@ class Proof
     return found_new
   end
 
+  def add_contrapositives
+    contrapositives = @steps.map { |step| Contrapositive.new(step.formula) }
+    contrapositives.each { |c| @steps << c unless @steps.any? { |step| step.formula == c.formula } }
+  end
+
   # the main function
   def prove
     puts "\nHypotheses\n----------"
@@ -114,7 +119,9 @@ class Proof
 
     # iterate until goal found
     until @steps.any? { |step| step.formula == @goal }
+      add_contrapositives
       modus_ponens_results = add_modus_ponens
+      # break
       if modus_ponens_results.empty?
         found_new = add_axioms
         if not found_new

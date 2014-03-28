@@ -82,3 +82,15 @@ class ModusPonens < ProofStep
     @step2.print_formula
   end
 end
+
+class Contrapositive < ProofStep
+  def initialize(wff)
+    @formula = Formula.contrapositive(wff)
+    @a = wff
+  end
+
+  def print_reason
+    print "Contrapositive of "
+    @a.print_formula
+  end
+end

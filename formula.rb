@@ -6,10 +6,6 @@ class Formula
     @rhs = rhs
   end
 
-  def set_to_expr(expr)
-    Formula.new(expr.lhs, expr.rhs)
-  end
-
   def print_formula
     print '('
     @lhs.print_formula
@@ -66,6 +62,17 @@ class Formula
 
     def logical_and(x,y)
       Formula.new(Formula.new(x,Formula.new(y, $FALSE_VAL)),$FALSE_VAL)
+    end
+
+    def contrapositive(x)
+      if x.formula?
+        Formula.new(
+          Formula.logical_not(x.rhs).reduce_negations,
+          Formula.logical_not(x.lhs).reduce_negations
+        )
+      else
+        x
+      end
     end
   end
 
